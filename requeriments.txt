@@ -1,0 +1,5 @@
+fastapi==0.115.12
+uvicorn[standart]
+SQLalchemy== 2.0.41
+PyMySQL==1.1.1
+cryptography==45.0.3
