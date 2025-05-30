@@ -1,8 +1,9 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-# Configuración de la base de datos
-DATABASE_URL = "mysql+pymysql://root:Jdbaba.10@localhost:3306/tareas_db"
+# Usa variable de entorno para la URL de la base de datos
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 
