@@ -32,7 +32,7 @@ def lista_tareas(db: Session = Depends(get_db)):
     return tareas
 
 @app.get("/tareas{tarea_id}", response_model=Tarea_out)
-def obtener_tarea(tarea_id: int, db: session = Depends(get_db)):
+def obtener_tarea(tarea_id: int, db: Session = Depends(get_db)):
     tarea = db.query(Tarea).filter(Tarea.id == tarea_id).first()
     if tarea is None:
         return {"error": "Tarea no encontrada"}
