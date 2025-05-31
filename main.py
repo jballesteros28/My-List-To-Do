@@ -30,3 +30,31 @@ def crear_tarea(tarea: TareaCreate, db: Session = Depends(get_db)):
 def lista_tareas(db: Session = Depends(get_db)):
     tareas = db.query(Tarea).all()
     return tareas
+
+@app.get("/tareas{tarea_id}", response_model=Tarea_out)
+def obtener_tarea(tarea_id: int, db: session = Depends(get_db)):
+    tarea = db.query(Tarea).filter(Tarea.id == tarea_id).first()
+    if tarea is None:
+        return {"error": "Tarea no encontrada"}
+    return tarea
+
+@app.put("/tareas/{tarea_id}", response_model=Tarea_out)
+def actualizar_tarea(tarea_id: int, tarea_data: TareaCreate, db: Session = Depends(get_db)):
+    tarea = db.query(Tarea).filter(Tarea.id == tarea_id).first()
+    if not tarea:
+        return {"error": "Tarea no encontrada"}
+    
+    tarea.titulo = tarea_data.titulo
+    db.commit()
+    db.refresh(tarea)
+    return tarea
+
+@app.delete("/tareas/{tarea_id}")
+def eliminar_tarea(tarea_id: int, db: Session = Depends(get_db)):
+    tarea = db.query(Tarea).filter(Tarea.id == tarea_id).first()
+    if not tarea:
+        return {"error": "Tarea no encontrada"}
+    
+    db.delete(tarea)
+    db.commit()
+    return {"mensaje": "Tarea eliminada correctamente"}
