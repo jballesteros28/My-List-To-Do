@@ -1,12 +1,23 @@
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from database import engine, SessionLocal
-from models import base, Tarea
-from schemas import TareaCreate, Tarea_out
+from backend.database import engine, SessionLocal
+from backend.models import base, Tarea
+from backend.schemas import TareaCreate, Tarea_out
 from typing import List
 # Importar las dependencias necesarias
 
 app = FastAPI()
+
+
+# Habilitar CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Podés poner tu frontend aquí para más seguridad
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 base.metadata.create_all(bind=engine) #crea las tablas en la base de datos
 
