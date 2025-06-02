@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { getTareas, deleteTarea } from "../api/tareas";
+import "../styles/List.css";
 
-function TareaList() {
+function TareaList({ actualizar, onEditClick, onTaskChanged }) {
   const [tareas, setTareas] = useState([]);
 
   const cargarTareas = async () => {
@@ -11,19 +12,23 @@ function TareaList() {
 
   useEffect(() => {
     cargarTareas();
-  }, []);
+  }, [actualizar]);
 
   const handleDelete = async (id) => {
     await deleteTarea(id);
     cargarTareas();
+    onTaskChanged();
   };
 
   return (
     <ul>
       {tareas.map((tarea) => (
         <li key={tarea.id}>
-          {tarea.titulo}
-          <button onClick={() => handleDelete(tarea.id)}>Eliminar</button>
+          <span>{tarea.titulo}</span>
+          <div className="acciones">
+            <button onClick={() => onEditClick(tarea)}>Editar</button>
+            <button onClick={() => handleDelete(tarea.id)}>Eliminar</button>
+          </div>
         </li>
       ))}
     </ul>

@@ -1,33 +1,52 @@
-import { useState } from "react";
-import { createTarea } from "../api/tareas.js";
+import { useState, useEffect } from "react";
+import { createTarea, updateTarea } from "../api/tareas";
+import "../styles/Form.css";
 
-function TareaForm({ onTaskCreated }) {
+function TareaForm({ onTaskSaved, tareaActual, setTareaActual }) {
   const [titulo, setTitulo] = useState("");
+
+  useEffect(() => {
+    if (tareaActual) {
+      setTitulo(tareaActual.titulo);
+    } else {
+      setTitulo("");
+    }
+  }, [tareaActual]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!titulo.trim()) return; // evita enviar vacío
+    if (!titulo.trim()) return;
 
-  try {
-    await createTarea({ titulo }); // <- asegúrate que título es string válido
-    setTitulo("");
-    onTaskCreated();
-  } catch (error) {
-    console.error("Error al crear tarea:", error);
-  }
+    try {
+      if (tareaActual) {
+        await updateTarea(tareaActual.id, { titulo });
+        setTareaActual(null); // salir del modo edición
+      } else {
+        await createTarea({ titulo });
+      }
+
+      setTitulo("");
+      onTaskSaved();
+    } catch (error) {
+      console.error("Error al guardar tarea:", error);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <input
         type="text"
-        placeholder="Nueva tarea"
+        placeholder="Escribí una tarea"
         value={titulo}
         onChange={(e) => setTitulo(e.target.value)}
       />
-      <button type="submit">Agregar</button>
+      <button type="submit">{tareaActual ? "Actualizar" : "Agregar"}</button>
+      {tareaActual && (
+        <button type="button" onClick={() => setTareaActual(null)}>
+          Cancelar
+        </button>
+      )}
     </form>
-    
   );
 }
 

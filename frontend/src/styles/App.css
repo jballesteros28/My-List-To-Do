@@ -1,0 +1,21 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #e0e5ec;
+  margin: 0;
+  padding: 0;
+}
+
+.app-container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 30px;
+  background: #e0e5ec;
+  border-radius: 20px;
+  box-shadow: 8px 8px 16px #babecc, -8px -8px 16px #ffffff;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+}
