@@ -1,9 +1,11 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Depends
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from backend.database import engine, SessionLocal
-from backend.models import base, Tarea
-from backend.schemas import TareaCreate, Tarea_out
+from backend.models import base, Tarea, Usuario
+from backend.schemas import TareaCreate, Tarea_out,UsuarioCreate, Token
+from backend import auth
 from typing import List
 # Importar las dependencias necesarias
 
@@ -29,9 +31,9 @@ def get_db():
     finally:
         db.close()
         
-@app.post("/tareas/")
-def crear_tarea(tarea: TareaCreate, db: Session = Depends(get_db)):
-    nueva_tarea = Tarea(titulo=tarea.titulo)
+@app.post("/tareas/", response_model=Tarea_out)
+def crear_tarea(tarea: TareaCreate, db: Session = Depends(get_db), usuario: Usuario = Depends(auth.obtener_usuario_actual)):
+    nueva_tarea = Tarea(**tarea.model_dump(), usuario_id=usuario.id)
     db.add(nueva_tarea)
     db.commit()
     db.refresh(nueva_tarea)
@@ -42,12 +44,9 @@ def lista_tareas(db: Session = Depends(get_db)):
     tareas = db.query(Tarea).all()
     return tareas
 
-@app.get("/tareas{tarea_id}", response_model=Tarea_out)
-def obtener_tarea(tarea_id: int, db: Session = Depends(get_db)):
-    tarea = db.query(Tarea).filter(Tarea.id == tarea_id).first()
-    if tarea is None:
-        return {"error": "Tarea no encontrada"}
-    return tarea
+@app.get("/tareas", response_model=List[Tarea_out])
+def obtener_tarea(db: Session = Depends(get_db),usuario: Usuario = Depends(auth.obtener_usuario_actual)):
+    return db.query(Tarea).filter(Tarea.usuario_id == usuario.id).all()
 
 @app.put("/tareas/{tarea_id}", response_model=Tarea_out)
 def actualizar_tarea(tarea_id: int, tarea_data: TareaCreate, db: Session = Depends(get_db)):
@@ -69,3 +68,26 @@ def eliminar_tarea(tarea_id: int, db: Session = Depends(get_db)):
     db.delete(tarea)
     db.commit()
     return {"mensaje": "Tarea eliminada correctamente"}
+
+@app.post("/registro", response_model=UsuarioOut)
+def registrar(usuario: UsuarioCreate, db: Session = Depends(auth.get_db)):
+    db_usuario = db.query(Usuario).filter(Usuario.email == usuario.email).first()
+    if db_usuario:
+        raise HTTPException(status_code=400, detail="Email ya registrado")
+    
+    
+    hashed_pwd = auth.hashear_password(usuario.password)
+    nuevo_usuario = Usuario(email=usuario.email,password=hashed_pwd)
+    db.add(nuevo_usuario)
+    db.commit()
+    db.refresh(nuevo_usuario)
+    return nuevo_usuario
+
+@app.post("/login", response_model=Token)
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(auth.get_db)):
+    usuario = auth.autenticar_usuario(db, form_data.username, form_data.password)
+    if not usuario:
+        raise HTTPException(status_code=401, detail="Credenciales inválidas")
+    
+    token = auth.crear_token({"sub": usuario.email})
+    return {"access_token": token, "token_type": "bearer"}
