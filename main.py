@@ -1,10 +1,10 @@
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from backend.database import engine, SessionLocal
 from backend.models import base, Tarea, Usuario
-from backend.schemas import TareaCreate, Tarea_out,UsuarioCreate, Token
+from backend.schemas import TareaCreate, Tarea_out,UsuarioCreate, Token, UsuarioOut
 from backend import auth
 from typing import List
 # Importar las dependencias necesarias
