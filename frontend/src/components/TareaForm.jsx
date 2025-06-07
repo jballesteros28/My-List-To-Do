@@ -1,54 +1,46 @@
 import { useState, useEffect } from "react";
-import { createTarea, getTarea, updateTarea } from "../api/tareas";
 import { useAuth } from "../context/AuthContext";
+import { createTarea, updateTarea } from "../api/tareas";
+import "../styles/Form.css";
 
-function TareaForm({ actualizar, tareaSeleccionada, onTaskChanged }) {
+function TareaForm({ onTaskSaved, tareaActual, setTareaActual }) {
   const [titulo, setTitulo] = useState("");
-  const { token } = useAuth(); // ✅ usamos el token
 
-  // Cargar la tarea seleccionada para editar
   useEffect(() => {
-    const cargarTarea = async () => {
-      if (tareaSeleccionada) {
-        try {
-          const res = await getTarea(tareaSeleccionada.id, token); // ✅ token
-          setTitulo(res.data.titulo);
-        } catch (err) {
-          console.error("Error al obtener tarea:", err);
-        }
-      } else {
-        setTitulo("");
-      }
-    };
-    cargarTarea();
-  }, [tareaSeleccionada, token]);
+    if (tareaActual) {
+      setTitulo(tareaActual.titulo);
+    } else {
+      setTitulo("");
+    }
+  }, [tareaActual]);
 
-  // Guardar o actualizar tarea
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!titulo.trim()) return;
+
     try {
-      if (tareaSeleccionada) {
-        await updateTarea(tareaSeleccionada.id, { titulo }, token); // ✅ token
-      } else {
-        await createTarea({ titulo }, token); // ✅ token
-      }
-      setTitulo("");
-      onTaskChanged(); // Notifica al padre para refrescar
-    } catch (err) {
-      console.error("Error al guardar tarea:", err);
-    }
+    await createTarea({ titulo }, token); // ✅ enviamos el token
+    setTitulo("");
+    onTaskChanged(); // refrescar lista
+  } catch (err) {
+    console.error("Error al guardar tarea:", err);
+  }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <input
         type="text"
+        placeholder="Escribí una tarea"
         value={titulo}
         onChange={(e) => setTitulo(e.target.value)}
-        placeholder="Escribe una tarea"
-        required
       />
-      <button type="submit">{tareaSeleccionada ? "Actualizar" : "Guardar"}</button>
+      <button type="submit">{tareaActual ? "Actualizar" : "Agregar"}</button>
+      {tareaActual && (
+        <button type="button" onClick={() => setTareaActual(null)}>
+          Cancelar
+        </button>
+      )}
     </form>
   );
 }
