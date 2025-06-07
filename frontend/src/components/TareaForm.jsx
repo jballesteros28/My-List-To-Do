@@ -5,6 +5,7 @@ import "../styles/Form.css";
 
 function TareaForm({ onTaskSaved, tareaActual, setTareaActual }) {
   const [titulo, setTitulo] = useState("");
+  const { token } = useAuth();
 
   useEffect(() => {
     if (tareaActual) {
