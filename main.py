@@ -15,7 +15,9 @@ app = FastAPI()
 # Habilitar CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Podés poner tu frontend aquí para más seguridad
+    allow_origins=["https://my-list-to-do.onrender.com",
+                   "https://my-list-to-do-delta.vercel.app/"
+                   ],  # Podés poner tu frontend aquí para más seguridad
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
