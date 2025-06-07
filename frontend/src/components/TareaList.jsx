@@ -1,23 +1,35 @@
 import { useEffect, useState } from "react";
 import { getTareas, deleteTarea } from "../api/tareas";
+import { useAuth } from "../context/AuthContext"; // ✅ Importar contexto
 import "../styles/List.css";
 
 function TareaList({ actualizar, onEditClick, onTaskChanged }) {
   const [tareas, setTareas] = useState([]);
+  const { token } = useAuth(); // ✅ Obtener token
 
   const cargarTareas = async () => {
-    const res = await getTareas();
-    setTareas(res.data);
+    try {
+      const res = await getTareas(token); // ✅ Usar token
+      setTareas(res.data);
+    } catch (error) {
+      console.error("Error al cargar tareas:", error);
+    }
   };
 
   useEffect(() => {
-    cargarTareas();
-  }, [actualizar]);
+    if (token) {
+      cargarTareas();
+    }
+  }, [actualizar, token]);
 
   const handleDelete = async (id) => {
-    await deleteTarea(id);
-    cargarTareas();
-    onTaskChanged();
+    try {
+      await deleteTarea(id, token); // ✅ Usar token
+      cargarTareas();
+      onTaskChanged();
+    } catch (error) {
+      console.error("Error al eliminar tarea:", error);
+    }
   };
 
   return (
