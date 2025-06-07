@@ -39,7 +39,7 @@ def crear_tarea(tarea: TareaCreate, db: Session = Depends(get_db), usuario: Usua
     db.add(nueva_tarea)
     db.commit()
     db.refresh(nueva_tarea)
-    return {"id": nueva_tarea.id, "titulo": nueva_tarea.titulo}
+    return nueva_tarea
 
 @app.get("/tareas/", response_model=List[Tarea_out])
 def lista_tareas(db: Session = Depends(get_db)):

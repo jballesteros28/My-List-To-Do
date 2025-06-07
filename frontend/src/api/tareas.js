@@ -2,13 +2,9 @@ import axios from "axios";
 
 const API = 'https://my-list-to-do.onrender.com/tareas/';
 
-// ✅ Todas las funciones ahora reciben el token como argumento
-
 export const getTareas = (token) =>
   axios.get(API, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
   });
 
 export const createTarea = (data, token) =>
@@ -21,21 +17,15 @@ export const createTarea = (data, token) =>
 
 export const deleteTarea = (id, token) =>
   axios.delete(`${API}${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
   });
 
 export const updateTarea = (id, data, token) =>
   axios.put(`${API}${id}`, data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
   });
 
 export const getTarea = (id, token) =>
   axios.get(`${API}${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
   });
