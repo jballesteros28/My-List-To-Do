@@ -21,7 +21,7 @@ function TareaForm({ onTaskSaved, tareaActual, setTareaActual }) {
     try {
     await createTarea({ titulo }, token); // ✅ enviamos el token
     setTitulo("");
-    onTaskChanged(); // refrescar lista
+    onTaskSaved(); // refrescar lista
   } catch (err) {
     console.error("Error al guardar tarea:", err);
   }
