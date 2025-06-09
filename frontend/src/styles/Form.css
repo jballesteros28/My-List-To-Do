@@ -1,7 +1,9 @@
 form {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 30px;
+  
 }
 
 input[type="text"] {
@@ -28,6 +30,7 @@ button {
   box-shadow: 4px 4px 8px #babecc, -4px -4px 8px #ffffff;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  margin-left: auto; 
 }
 
 button:hover {
