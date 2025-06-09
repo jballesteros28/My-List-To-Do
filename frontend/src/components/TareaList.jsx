@@ -24,7 +24,7 @@ function TareaList({ actualizar, onEditClick, onTaskChanged }) {
     <ul>
       {tareas.map((tarea) => (
         <li key={tarea.id}>
-          <span>{tarea.titulo}</span>
+          <span className="tarea-texto">{tarea.titulo}</span>
           <div className="acciones">
             <button onClick={() => onEditClick(tarea)}>Editar</button>
             <button onClick={() => handleDelete(tarea.id)}>Eliminar</button>

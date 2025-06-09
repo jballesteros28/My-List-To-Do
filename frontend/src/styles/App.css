@@ -19,3 +19,14 @@ h1 {
   color: #333;
   margin-bottom: 30px;
 }
+
+
+/* Margen horizontal + ancho adaptable en pantallas pequeñas */
+@media (max-width: 600px) {
+  .app-container {
+    max-width: 90vw;
+    margin-left: 20px;
+    margin-right: 20px;
+    padding: 20px;
+  }
+}
