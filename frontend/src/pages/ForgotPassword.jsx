@@ -19,7 +19,7 @@ function ForgotPassword() {
     console.log("Enviando:", { username, email });
 
     try {
-      const res = await fetch("http://localhost:8000/auth/forgot-password", {
+      const res = await fetch("https://my-list-to-do.onrender.com/auth/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: username.trim(), email: email.trim() }), // Envía ambos campos como json

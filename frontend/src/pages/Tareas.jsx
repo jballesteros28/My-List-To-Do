@@ -8,7 +8,7 @@ function Tareas() {
   const [editTitulo, setEditTitulo] = useState("");
   const [error, setError] = useState("");
 
-  const API_URL = "http://localhost:8000/tareas/"; // Cambia por la URL de tu backend
+  const API_URL = "https://my-list-to-do.onrender.com/tareas/"; // Cambia por la URL de tu backend
 
   const getToken = () => localStorage.getItem("token");
 

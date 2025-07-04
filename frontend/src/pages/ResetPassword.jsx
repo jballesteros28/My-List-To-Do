@@ -28,7 +28,7 @@ function ResetPassword() {
   setLoading(true);
   setMessage("");
   try {
-    const res = await fetch("http://localhost:8000/auth/validate-reset-code", {
+    const res = await fetch("https://my-list-to-do.onrender.com/auth/validate-reset-code", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
