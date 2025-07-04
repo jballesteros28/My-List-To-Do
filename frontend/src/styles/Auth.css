@@ -1,0 +1,103 @@
+body {
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e0e5ec;
+}
+
+h2{
+    text-align: center;
+}
+
+.login-container,
+.register-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 500px;
+  min-width: 350px;
+  min-height: 400px;
+  padding: 38px 28px;
+  margin: 80px auto;
+  border-radius: 20px;
+  background: #e0e5ec;
+  box-shadow: 8px 8px 16px #babecc, -8px -8px 16px #ffffff;
+}
+
+.login-container > *,
+.register-container > * {
+    width: 80%;
+    max-width: 300px;        
+    min-width: 220px;        
+    box-sizing: border-box;
+    margin-bottom: 18px;
+}
+
+.neu-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;  
+  width: 100%;
+  padding: 12px;
+   margin-bottom: 16px;
+  border-radius: 12px;
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+  background: #e0e0e0;
+  box-shadow: inset 4px 4px 8px #babecc, inset -4px -4px 8px #ffffff;
+  font-size: 1rem;
+  text-align: left;
+}
+
+  
+
+.neu-button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  box-sizing: border-box;
+  background: #e0e0e0;
+  box-shadow: 2px 2px 8px #bfc4ce, -2px -2px 8px #fff;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s ease-in-out;
+  text-align: center;
+}
+
+.neu-button:hover {
+  box-shadow: inset 5px 5px 10px #bebebe,
+              inset -5px -5px 10px #ffffff;
+}
+
+
+h2{
+  text-align: center;
+  width: 100%;
+  margin-bottom: 26px;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+
+p{
+  width: 100%;
+  text-align: center;
+  margin-top: 8px;
+  font-size: 1rem;
+}
+
+.auth-link{
+  text-align: center;
+}
+
+
+
+
+
