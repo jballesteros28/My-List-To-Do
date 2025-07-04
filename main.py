@@ -21,7 +21,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)cd
+)
 
 Base.metadata.create_all(bind=engine) #crea las tablas en la base de datos
 app.include_router(users_router, prefix="/auth")
