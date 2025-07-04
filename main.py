@@ -17,11 +17,11 @@ app = FastAPI()
 # Habilitar CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173","https://my-list-to-do.onrender.com"],  # Podés poner tu frontend aquí para más seguridad
+    allow_origins=["http://localhost:5173","https://my-list-to-do-eight.vercel.app"],  # Podés poner tu frontend aquí para más seguridad
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
+)cd
 
 Base.metadata.create_all(bind=engine) #crea las tablas en la base de datos
 app.include_router(users_router, prefix="/auth")
