@@ -17,7 +17,7 @@ app = FastAPI()
 # Habilitar CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173","https://my-list-to-do.onrender.com/"],  # Podés poner tu frontend aquí para más seguridad
+    allow_origins=["http://localhost:5173","https://my-list-to-do.onrender.com"],  # Podés poner tu frontend aquí para más seguridad
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
