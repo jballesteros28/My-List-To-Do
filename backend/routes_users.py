@@ -45,7 +45,7 @@ def register(user: UserCreate, background_tasks: BackgroundTasks, db: Session = 
     db.commit()
 
     # 3. Enviar mail con link de confirmación
-    confirmation_link = f"http://localhost:5173/confirm-email?token={token}"
+    confirmation_link = f"https://my-list-to-do.onrender.com/confirm-email?token={token}"
     background_tasks.add_task(
         send_email,
         to=user.email,
@@ -68,7 +68,7 @@ def confirm_email(token: str, db: Session = Depends(get_db)):
     db.delete(db_token)
     db.commit()
     # Redirigir a la página de login del frontend
-    return RedirectResponse(url="http://localhost:5173/login")
+    return RedirectResponse(url="https://my-list-to-do.onrender.com/login")
 
 
 
