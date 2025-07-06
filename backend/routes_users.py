@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends, HTTPException, status
 import secrets
 import smtplib
 from dotenv import load_dotenv
-load_dotenv()  # Esto carga el .env al entorno
 import os
 from email.mime.text import MIMEText
 from datetime import datetime, timedelta
@@ -15,6 +14,8 @@ from backend.auth import verify_password, create_access_token, pwd_context
 from backend.database import get_db 
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import BackgroundTasks
+
+load_dotenv()  # Esto carga el .env al entorno
 
 router = APIRouter()
 
@@ -177,4 +178,47 @@ def validate_reset_code(req: ValidateResetCodeRequest, db: Session = Depends(get
     if not db_otp or db_otp.expiration < datetime.utcnow():
         raise HTTPException(status_code=400, detail="Código inválido o expirado")
     return {"msg": "Código válido"}
+
+
+
+
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from backend.models import User, ConfirmationToken
+from backend.database import get_db
+import secrets
+
+@router.post("/resend-confirmation")
+def resend_confirmation(email: str, db: Session = Depends(get_db)):
+    """
+    Permite reenviar el correo de confirmación de cuenta a usuarios no activados.
+    Si el usuario ya confirmó, avisa; si no existe, también avisa.
+    """
+    user = db.query(User).filter_by(email=email).first()
+    if not user:
+        # El usuario no existe
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    if user.is_active:
+        # La cuenta ya fue confirmada
+        return {"msg": "La cuenta ya fue confirmada"}
+
+    # (Opcional) Borra tokens anteriores para evitar duplicados y problemas de seguridad
+    db.query(ConfirmationToken).filter_by(user_id=user.id).delete()
+
+    # Crea un nuevo token y lo guarda
+    token = secrets.token_urlsafe(20)
+    db_token = ConfirmationToken(user_id=user.id, token=token)
+    db.add(db_token)
+    db.commit()
+
+    # Prepara el link de confirmación (ajusta la URL a tu frontend real)
+    confirmation_link = f"https://my-list-to-do.onrender.com/confirm-email?token={token}"
+
+    # Envía el correo de confirmación
+    send_email(
+        to=user.email,
+        subject="Reenvío de confirmación de cuenta",
+        body=f"¡Hola! Haz click en el siguiente enlace para confirmar tu cuenta:\n{confirmation_link}\n\nSi no pediste esto, ignora el mensaje."
+    )
+    return {"msg": "Te enviamos un nuevo correo de confirmación"}
 

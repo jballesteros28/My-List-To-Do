@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import NeuInput from '../components/NeuInput';
 import NeuButton from '../components/NeuButton';
+import NeuModal from '../components/NeuModal';              // <--- Nuevo import
+import ResendConfirmation from './ResendConfirmation';
 import '../styles/Auth.css';
 
 const Login = () => {
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
+  const [showResendModal, setShowResendModal] = useState(false);  // <--- Nuevo estado
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -21,7 +24,7 @@ const Login = () => {
       formData.append('username', form.username);
       formData.append('password', form.password);
 
-      const response = await fetch("https://my-list-to-do.onrender.com/auth/login", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
@@ -38,6 +41,13 @@ const Login = () => {
           errMsg = data.detail || "Error desconocido";
         }
         setError(errMsg);
+        // Si el error es por cuenta no confirmada, muestra el modal
+        if (
+          errMsg.toLowerCase().includes("confirmar tu correo") ||
+          errMsg.toLowerCase().includes("cuenta no confirmada")
+        ) {
+          setShowResendModal(true);
+        }
         return;
       }
       localStorage.setItem("token", data.access_token);
@@ -75,9 +85,31 @@ const Login = () => {
       <div className="auth-link">
         <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
       </div>
+      <div style={{ textAlign: "center", marginTop: "1rem" }}>
+        <button
+          type="button"
+          onClick={() => setShowResendModal(true)}
+          style={{
+            background: "none",
+            border: "none",
+            color: "#7d6efc",
+            textDecoration: "underline",
+            cursor: "pointer",
+            fontSize: "1rem"
+          }}
+        >
+          ¿No recibiste el correo de confirmación?
+        </button>
+      </div>
+
+      {/* MODAL de reenviar confirmación */}
+      <NeuModal isOpen={showResendModal} onClose={() => setShowResendModal(false)}>
+        <ResendConfirmation onClose={() => setShowResendModal(false)} />
+      </NeuModal>
     </div>
   );
 };
 
 export default Login;
+
 

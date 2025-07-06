@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Tareas from "./pages/Tareas";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import ResendConfirmation from "./pages/ResendConfirmation";
 
 // Componente para proteger rutas (solo si hay token en localStorage)
 function PrivateRoute({ children }) {
@@ -50,6 +51,7 @@ function App() {
         />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/resend-confirmation" element={<ResendConfirmation />} />
       </Routes>
     </Router>
   );
