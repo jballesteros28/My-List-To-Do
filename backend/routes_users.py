@@ -1,5 +1,3 @@
-# backend/routes_users.py
-
 from fastapi import APIRouter, Depends, HTTPException, status
 import secrets
 import smtplib
@@ -12,8 +10,9 @@ from backend.schemas import UserCreate, ForgotPasswordRequest, ResetPasswordRequ
 from backend.models import User, ConfirmationToken, PasswordResetCode
 from backend.auth import verify_password, create_access_token, pwd_context
 from backend.database import get_db 
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from fastapi import BackgroundTasks
+from backend.auth import get_current_user
 
 load_dotenv()  # Esto carga el .env al entorno
 
@@ -57,19 +56,22 @@ def register(user: UserCreate, background_tasks: BackgroundTasks, db: Session = 
 
 from fastapi.responses import RedirectResponse
 
+from fastapi.responses import RedirectResponse
+
 @router.get("/confirm-email")
 def confirm_email(token: str, db: Session = Depends(get_db)):
     db_token = db.query(ConfirmationToken).filter_by(token=token).first()
     if not db_token:
-        raise HTTPException(status_code=400, detail="Token inválido")
+        return RedirectResponse(url="https://my-list-to-do.onrender.com/login?confirm=fail")
     user = db.query(User).filter_by(id=db_token.user_id).first()
     if not user:
-        raise HTTPException(status_code=400, detail="Usuario no encontrado")
+        return RedirectResponse(url="https://my-list-to-do.onrender.com/login?confirm=fail")
     user.is_active = True
     db.delete(db_token)
     db.commit()
-    # Redirigir a la página de login del frontend
-    return RedirectResponse(url="https://my-list-to-do.onrender.com/login")
+    # Redirige al login de tu frontend y puede pasar query param para feedback
+    return RedirectResponse(url="https://my-list-to-do.onrender.com/login?confirm=success")
+
 
 
 
@@ -210,4 +212,25 @@ def resend_confirmation(req: ResendConfirmationRequest, db: Session = Depends(ge
         body=f"¡Hola! Haz click en el siguiente enlace para confirmar tu cuenta:\n{confirmation_link}\n\nSi no pediste esto, ignora el mensaje."
     )
     return {"msg": "Te enviamos un nuevo correo de confirmación"}
+
+
+
+@router.delete("/cleanup-unconfirmed-users")
+def cleanup_unconfirmed_users(db: Session = Depends(get_db)):
+    dias = 2  # Puedes ajustar este número
+    fecha_limite = datetime.utcnow() - timedelta(days=dias)
+    # Supón que tienes una columna "created_at" en User
+    borrados = db.query(User).filter(
+        User.is_active == False,
+        User.created_at < fecha_limite
+    ).delete(synchronize_session=False)
+    db.commit()
+    return {"borrados": borrados}
+
+
+@router.delete("/delete-account")
+def delete_account(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    db.delete(current_user)
+    db.commit()
+    return {"msg": "Cuenta eliminada correctamente"}
 

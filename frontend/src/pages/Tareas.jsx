@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/Tareas.css"
 
 function Tareas() {
@@ -7,6 +8,8 @@ function Tareas() {
   const [editId, setEditId] = useState(null);
   const [editTitulo, setEditTitulo] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+
 
   const API_URL = "https://my-list-to-do.onrender.com/tareas/"; // Cambia por la URL de tu backend
 
@@ -95,9 +98,10 @@ function Tareas() {
     }
   };
   function handleLogout() {
-  localStorage.removeItem("token");
-  window.location.href = "/login";
-}
+    localStorage.removeItem("token");
+    navigate("/login");
+  }
+
 
   return (
     <div className="tareas-wrapper">

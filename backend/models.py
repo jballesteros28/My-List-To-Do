@@ -23,6 +23,7 @@ class User(Base):
     tareas = relationship("Tarea", back_populates="user")
     is_active: Mapped[bool] = mapped_column(default=False, nullable=True)
     confirmation_tokens = relationship("ConfirmationToken", back_populates="user")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     
 
 class ConfirmationToken(Base):
