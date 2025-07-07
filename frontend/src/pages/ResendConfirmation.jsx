@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import NeuInput from "../components/NeuInput";
 import NeuButton from "../components/NeuButton";
 
-/**
- * Formulario neuromórfico para reenviar correo de confirmación.
- */
-function ResendConfirmation({ onClose }) {
-  const [email, setEmail] = useState("");
+function ResendConfirmation() {
+  const location = useLocation();
+  // Permite autocompletar el mail si vienes del login
+  const [email, setEmail] = useState(location.state?.email || "");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -33,27 +33,29 @@ function ResendConfirmation({ onClose }) {
   };
 
   return (
-    <form onSubmit={handleResend} style={{ textAlign: "center" }}>
-      <h3>Reenviar correo de confirmación</h3>
-      <NeuInput
-        type="email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        required
-        placeholder="Tu correo"
-        autoFocus
-        style={{ marginBottom: "1rem" }}
-      />
-      <div style={{ margin: "1rem 0" }}>
-        <NeuButton type="submit" disabled={loading || !email}>
-          {loading ? "Enviando..." : "Reenviar"}
-        </NeuButton>
-      </div>
-      {message && <p style={{ margin: "1rem 0", color: "#4b4b4b" }}>{message}</p>}
-      <NeuButton type="button" onClick={onClose} style={{ background: "#eee", marginTop: "0.5rem" }}>
-        Cerrar
-      </NeuButton>
-    </form>
+    <div className="resend-confirmation-container" style={{
+      minHeight: "100vh", display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center"
+    }}>
+      <form onSubmit={handleResend} style={{ textAlign: "center", maxWidth: 340, width: "100%" }}>
+        <h3>Reenviar correo de confirmación</h3>
+        <NeuInput
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+          placeholder="Tu correo"
+          autoFocus
+          style={{ marginBottom: "1rem" }}
+        />
+        <div style={{ margin: "1rem 0" }}>
+          <NeuButton type="submit" disabled={loading || !email}>
+            {loading ? "Enviando..." : "Reenviar"}
+          </NeuButton>
+        </div>
+        {message && <p style={{ margin: "1rem 0", color: "#4b4b4b" }}>{message}</p>}
+      </form>
+    </div>
   );
 }
 

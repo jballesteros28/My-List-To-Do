@@ -14,7 +14,6 @@ class Tarea_out(BaseModel):
     class Config:
         from_attributes = True  # Permite convertir modelos SQLAlchemy en dicts automáticamente  
         
-from pydantic import BaseModel, EmailStr
 
 class UserCreate(BaseModel):
     username: str
@@ -48,3 +47,6 @@ class ValidateResetCodeRequest(BaseModel):
     email: str
     otp: str
     
+
+class ResendConfirmationRequest(BaseModel):
+    email: EmailStr

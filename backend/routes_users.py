@@ -8,7 +8,7 @@ import os
 from email.mime.text import MIMEText
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from backend.schemas import UserCreate, ForgotPasswordRequest, ResetPasswordRequest, ValidateResetCodeRequest
+from backend.schemas import UserCreate, ForgotPasswordRequest, ResetPasswordRequest, ValidateResetCodeRequest, ResendConfirmationRequest
 from backend.models import User, ConfirmationToken, PasswordResetCode
 from backend.auth import verify_password, create_access_token, pwd_context
 from backend.database import get_db 
@@ -180,20 +180,9 @@ def validate_reset_code(req: ValidateResetCodeRequest, db: Session = Depends(get
     return {"msg": "Código válido"}
 
 
-
-
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from backend.models import User, ConfirmationToken
-from backend.database import get_db
-import secrets
-
 @router.post("/resend-confirmation")
-def resend_confirmation(email: str, db: Session = Depends(get_db)):
-    """
-    Permite reenviar el correo de confirmación de cuenta a usuarios no activados.
-    Si el usuario ya confirmó, avisa; si no existe, también avisa.
-    """
+def resend_confirmation(req: ResendConfirmationRequest, db: Session = Depends(get_db)):
+    email = req.email
     user = db.query(User).filter_by(email=email).first()
     if not user:
         # El usuario no existe
