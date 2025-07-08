@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation} from 'react-router-dom';
 import NeuInput from '../components/NeuInput';
 import NeuButton from '../components/NeuButton';
 import '../styles/Auth.css';
@@ -8,10 +8,20 @@ const Login = () => {
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+  const [confirmMsg, setConfirmMsg] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("confirm") === "success") {
+      setConfirmMsg("¡Cuenta confirmada exitosamente! Ahora puedes iniciar sesión.");
+      window.history.replaceState({}, document.title, location.pathname);
+    }
+  }, [location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -58,6 +68,9 @@ const Login = () => {
   return (
     <div className="login-container">
       <h2>Iniciar Sesión</h2>
+      {confirmMsg && (
+        <div className="neu-confirm-message">{confirmMsg}</div>
+      )}
       <form onSubmit={handleSubmit}>
         <NeuInput
           type="text"
