@@ -15,45 +15,47 @@ function PrivateRoute({ children }) {
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route
-          path="/tareas"
-          element={
-            <PrivateRoute>
-              <Tareas />
-            </PrivateRoute>
-          }
-        />
-        {/* Redireccionar raíz a tareas si está logueado, sino a login */}
-        <Route
-          path="/"
-          element={
-            localStorage.getItem("token") ? (
-              <Navigate to="/tareas" />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-        {/* Cualquier ruta inválida va a login o tareas */}
-        <Route
-          path="*"
-          element={
-            localStorage.getItem("token") ? (
-              <Navigate to="/tareas" />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/resend-confirmation" element={<ResendConfirmation />} />
-      </Routes>
-    </Router>
+    <div className="main-container">
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/tareas"
+            element={
+              <PrivateRoute>
+                <Tareas />
+              </PrivateRoute>
+            }
+          />
+          {/* Redireccionar raíz a tareas si está logueado, sino a login */}
+          <Route
+            path="/"
+            element={
+              localStorage.getItem("token") ? (
+                <Navigate to="/tareas" />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          {/* Cualquier ruta inválida va a login o tareas */}
+          <Route
+            path="*"
+            element={
+              localStorage.getItem("token") ? (
+                <Navigate to="/tareas" />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/resend-confirmation" element={<ResendConfirmation />} />
+        </Routes>
+      </Router>
+    </div>
   );
 }
 

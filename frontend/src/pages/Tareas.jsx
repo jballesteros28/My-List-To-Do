@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DeleteAccount from "../components/DeleteAccount";
 import "../styles/Tareas.css"
 
 function Tareas() {
@@ -106,12 +107,8 @@ function Tareas() {
   return (
     <div className="tareas-wrapper">
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button
-          onClick={handleLogout}
-          className="tarea-btn logout-btn"
-        >
-          Cerrar sesión
-        </button>
+        <NeuButton onClick={handleLogout}>Cerrar sesión</NeuButton>
+        <DeleteAccount />
       </div>
       <h2 className="tareas-title">Lista de Tareas</h2>
       <form className="tareas-form" onSubmit={agregarTarea}>

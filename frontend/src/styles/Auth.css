@@ -115,6 +115,45 @@ p{
 
 
 
+@media (max-width: 600px) {
+  .login-container,
+  .register-container {
+    max-width: 98vw;
+    min-width: unset;
+    padding: 24px 7vw;
+    margin: 20px auto;
+    border-radius: 15px;
+  }
+
+  .login-container > *,
+  .register-container > * {
+    width: 100%;
+    max-width: 98vw;
+    min-width: unset;
+    margin-bottom: 15px;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+  }
+
+  .neu-confirm-message {
+    padding: 1em 1.1em;
+    max-width: 98vw;
+    font-size: 1rem;
+  }
+
+  .neu-input, .neu-button {
+    font-size: 0.96rem;
+    padding: 10px;
+    min-width: unset;
+  }
+}
+
+
+
+
 
 
 

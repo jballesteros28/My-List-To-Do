@@ -1,6 +1,6 @@
 import { useState } from "react";
 import NeuButton from "../components/NeuButton";
-import "../styles/DeleteAccount.css";
+import "../styles/DeleteAcount.css"; // Asegúrate detener este CSS
 
 function DeleteAccount() {
   const [message, setMessage] = useState("");

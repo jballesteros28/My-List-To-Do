@@ -6,6 +6,13 @@
   box-shadow: 8px 8px 16px #babecc, -8px -8px 16px #ffffff;
   padding: 40px 32px;
 }
+@media (max-width: 600px) {
+  .tareas-wrapper {
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: stretch;
+  }
+}
 
 .tareas-title {
   font-size: 2.2rem;
@@ -116,6 +123,67 @@
 .logout-btn:hover {
   background: #46a5b5;
 }
+
+
+@media (max-width: 600px) {
+  .tareas-wrapper {
+    max-width: 99vw;
+    padding: 18px 4vw;
+    border-radius: 14px;
+  }
+
+  .tareas-title {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+
+  .tareas-form {
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 18px;
+  }
+
+  .tarea-input {
+    font-size: 1rem;
+    padding: 9px 9px;
+  }
+
+  .tarea-btn,
+  .agregar-btn,
+  .editar-btn,
+  .eliminar-btn,
+  .cancelar-btn {
+    min-width: 60px;
+    font-size: 0.97rem;
+    padding: 9px 0;
+    margin-left: 0;
+    margin-top: 5px;
+  }
+
+  .tareas-list {
+    gap: 14px;
+  }
+
+  .tarea-item {
+    padding: 11px 8px;
+    border-radius: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tarea-titulo {
+    font-size: 1rem;
+  }
+
+  .logout-btn {
+    min-width: 60px;
+    font-size: 0.95rem;
+    padding: 8px 0;
+    margin-bottom: 9px;
+    border-radius: 7px;
+  }
+}
+
 
             
             
