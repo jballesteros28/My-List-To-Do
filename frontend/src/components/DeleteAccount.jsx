@@ -1,10 +1,12 @@
 import { useState } from "react";
 import NeuButton from "../components/NeuButton";
-import "../styles/DeleteAcount.css"; // Asegúrate detener este CSS
+import { useNavigate } from "react-router-dom";
+import "../styles/DeleteAcount.css"; 
 
 function DeleteAccount() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleDelete = async () => {
     if (!window.confirm("¿Seguro que quieres eliminar tu cuenta? Esta acción es irreversible.")) return;
@@ -23,7 +25,7 @@ function DeleteAccount() {
         setMessage("Cuenta eliminada correctamente.");
         localStorage.removeItem("token");
         setTimeout(() => {
-          window.location.href = "/login"; // o usa navigate("/login") si quieres navegación SPA
+          navigate("/login");
         }, 2000);
       } else {
         setMessage(data.detail || "No se pudo eliminar la cuenta.");

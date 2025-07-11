@@ -17,28 +17,6 @@
   max-width: 350px;
 }
 
-/* Ejemplo para formularios y contenedores */
-@media (max-width: 600px) {
-  .login-container,
-  .register-container,
-  .resend-confirmation-container {
-    max-width: 97vw;
-    padding: 24px 2vw;
-    border-radius: 15px;
-  }
-
-  .neu-input, .neu-button, input, button {
-    width: 100%;
-    min-width: unset;
-    font-size: 1rem;
-    box-sizing: border-box;
-  }
-  .neu-confirm-message, .delete-message {
-    max-width: 96vw;
-    font-size: 1rem;
-    padding: 1em 1.1em;
-  }
-}
 
 
 

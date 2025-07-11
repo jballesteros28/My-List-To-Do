@@ -45,7 +45,7 @@ def register(user: UserCreate, background_tasks: BackgroundTasks, db: Session = 
     db.commit()
 
     # 3. Enviar mail con link de confirmación
-    confirmation_link = f"https://my-list-to-do.onrender.com/confirm-email?token={token}"
+    confirmation_link = f"https://my-list-to-do-eight.vercel.app/confirm-email?token={token}"
     background_tasks.add_task(
         send_email,
         to=user.email,
@@ -62,15 +62,15 @@ from fastapi.responses import RedirectResponse
 def confirm_email(token: str, db: Session = Depends(get_db)):
     db_token = db.query(ConfirmationToken).filter_by(token=token).first()
     if not db_token:
-        return RedirectResponse(url="https://my-list-to-do.onrender.com/login?confirm=fail")
+        return RedirectResponse(url="https://my-list-to-do-eight.vercel.app/login?confirm=fail")
     user = db.query(User).filter_by(id=db_token.user_id).first()
     if not user:
-        return RedirectResponse(url="https://my-list-to-do.onrender.com/login?confirm=fail")
+        return RedirectResponse(url="https://my-list-to-do-eight.vercel.app/login?confirm=fail")
     user.is_active = True
     db.delete(db_token)
     db.commit()
     # Redirige al login de tu frontend y puede pasar query param para feedback
-    return RedirectResponse(url="https://my-list-to-do.onrender.com/login?confirm=success")
+    return RedirectResponse(url="https://my-list-to-do-eight.vercel.app/login?confirm=success")
 
 
 
@@ -203,7 +203,7 @@ def resend_confirmation(req: ResendConfirmationRequest, db: Session = Depends(ge
     db.commit()
 
     # Prepara el link de confirmación (ajusta la URL a tu frontend real)
-    confirmation_link = f"https://my-list-to-do.onrender.com/confirm-email?token={token}"
+    confirmation_link = f"https://my-list-to-do-eight.vercel.app/confirm-email?token={token}"
 
     # Envía el correo de confirmación
     send_email(
