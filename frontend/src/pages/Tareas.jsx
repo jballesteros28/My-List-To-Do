@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DeleteAccount from "../components/DeleteAccount";
-import NeuButton from '../components/NeuButton';
+import NeuButton from "../components/NeuButton";
 import "../styles/Tareas.css"
 
 function Tareas() {

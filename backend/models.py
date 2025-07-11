@@ -9,7 +9,7 @@ class Tarea(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     titulo: Mapped[str] = mapped_column(String(100), nullable=False)
     #Foreign key a User
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     user = relationship("User", back_populates="tareas")
     
     
@@ -20,7 +20,7 @@ class User(Base):
     username: Mapped[str] = mapped_column(unique=True, nullable=False, index=True)
     email: Mapped[str] = mapped_column(unique=True, nullable=False, index=True)
     hashed_password: Mapped[str] = mapped_column(nullable=False)
-    tareas = relationship("Tarea", back_populates="user")
+    tareas = relationship("Tarea", back_populates="user",  cascade="all, delete-orphan")
     is_active: Mapped[bool] = mapped_column(default=False, nullable=True)
     confirmation_tokens = relationship("ConfirmationToken", back_populates="user")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

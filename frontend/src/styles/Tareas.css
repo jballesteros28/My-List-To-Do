@@ -117,6 +117,40 @@
   background: #46a5b5;
 }
 
+
+
+/* Estilo base para los botones */
+.tareas-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.tareas-wrapper button,
+.tareas-wrapper .neu-button {
+  width: 180px;
+  max-width: 100%;
+  margin: 0;
+}
+
+/* Responsividad */
+@media (max-width: 600px) {
+  .tareas-wrapper {
+    align-items: stretch;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+  }
+  .tareas-wrapper button,
+  .tareas-wrapper .neu-button {
+    width: 100%;
+    font-size: 1.05rem;
+    padding: 12px 0;
+  }
+}
+
+
             
             
             
