@@ -29,6 +29,10 @@ __pycache__/
 .venv/
 
 # Env files
-.env
-.env.*
 test.db
+# Frontend
+/frontend/.env
+/frontend/.env.production
+
+# Backend
+/backend/.env

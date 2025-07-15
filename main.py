@@ -1,12 +1,13 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from backend.database import engine, get_db
+from backend.database import engine, get_db, SessionLocal
 from backend.models import Base, Tarea, User
 from backend.schemas import TareaCreate, Tarea_out
 from typing import List
-from backend.routes_users import router as users_router
+from backend.routes_users import router as users_router, cleanup_unconfirmed_users
 from backend.auth import get_current_user
+from apscheduler.schedulers.background import BackgroundScheduler
 
 
 # Importar las dependencias necesarias
@@ -14,10 +15,22 @@ from backend.auth import get_current_user
 app = FastAPI()
 
 
+
+def start_scheduler():
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(lambda: cleanup_unconfirmed_users(SessionLocal()), 'interval', minutes=1)
+    scheduler.start()
+    
+
+@app.on_event("startup")
+def startup_event():
+    start_scheduler()
+
+
 # Habilitar CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173","https://my-list-to-do-eight.vercel.app"],  # Podés poner tu frontend aquí para más seguridad
+    allow_origins=["http://localhost:5173","https://my-list-to-do-eight.vercel.app", "http://127.0.0.1:8000 "],  # Podés poner tu frontend aquí para más seguridad
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

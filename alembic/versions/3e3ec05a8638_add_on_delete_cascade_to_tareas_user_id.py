@@ -19,17 +19,14 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade():
-    # Eliminar constraint anterior
-    op.drop_constraint('tareas_user_id_fkey', 'tareas', type_='foreignkey')
-    # Crear constraint nueva con CASCADE
-    op.create_foreign_key(
-        'tareas_user_id_fkey',
-        'tareas',
-        'users',
-        ['user_id'],
-        ['id'],
-        ondelete='CASCADE'
-    )
+    with op.batch_alter_table("tareas", recreate="always") as batch_op:
+        batch_op.create_foreign_key(
+            'tareas_user_id_fkey',
+            'users',
+            ['user_id'],
+            ['id'],
+            ondelete='CASCADE'
+        )
 
 
 

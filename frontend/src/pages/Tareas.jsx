@@ -13,7 +13,6 @@ function Tareas() {
   const navigate = useNavigate();
 
 
-  const API_URL = "https://my-list-to-do.onrender.com/tareas/"; // Cambia por la URL de tu backend
 
   const getToken = () => localStorage.getItem("token");
 
@@ -21,7 +20,7 @@ function Tareas() {
   const fetchTareas = async () => {
     setError("");
     try {
-      const res = await fetch(API_URL, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/tareas/`, {
         headers: { Authorization: "Bearer " + getToken() },
       });
       if (!res.ok) throw new Error("No autorizado");

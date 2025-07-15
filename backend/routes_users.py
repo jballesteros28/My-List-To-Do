@@ -12,6 +12,7 @@ from backend.auth import verify_password, create_access_token, pwd_context
 from backend.database import get_db 
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from fastapi import BackgroundTasks
+from fastapi.responses import RedirectResponse
 from backend.auth import get_current_user
 
 load_dotenv()  # Esto carga el .env al entorno
@@ -45,7 +46,7 @@ def register(user: UserCreate, background_tasks: BackgroundTasks, db: Session = 
     db.commit()
 
     # 3. Enviar mail con link de confirmación
-    confirmation_link = f"https://my-list-to-do-eight.vercel.app/confirm-email?token={token}"
+    confirmation_link = f"https://https://my-list-to-do.onrender.com/confirm-email?token={token}"
     background_tasks.add_task(
         send_email,
         to=user.email,
@@ -56,21 +57,21 @@ def register(user: UserCreate, background_tasks: BackgroundTasks, db: Session = 
 
 from fastapi.responses import RedirectResponse
 
-from fastapi.responses import RedirectResponse
+
 
 @router.get("/confirm-email")
 def confirm_email(token: str, db: Session = Depends(get_db)):
     db_token = db.query(ConfirmationToken).filter_by(token=token).first()
     if not db_token:
-        return RedirectResponse(url="https://my-list-to-do.onrender.com/login?confirm=fail")
+        return RedirectResponse(url="https://my-list-to-do-eight.vercel.app/login?confirm=fail")
     user = db.query(User).filter_by(id=db_token.user_id).first()
     if not user:
-        return RedirectResponse(url="https://my-list-to-do.onrender.com/login?confirm=fail")
+        return RedirectResponse(url="https://my-list-to-do-eight.vercel.app/login?confirm=fail")
     user.is_active = True
     db.delete(db_token)
     db.commit()
     # Redirige al login de tu frontend y puede pasar query param para feedback
-    return RedirectResponse(url="https://my-list-to-do.onrender.com/login?confirm=success")
+    return RedirectResponse(url="https://my-list-to-do-eight.vercel.app/login?confirm=success")
 
 
 
@@ -217,15 +218,22 @@ def resend_confirmation(req: ResendConfirmationRequest, db: Session = Depends(ge
 
 @router.delete("/cleanup-unconfirmed-users")
 def cleanup_unconfirmed_users(db: Session = Depends(get_db)):
-    dias = 2  # Puedes ajustar este número
-    fecha_limite = datetime.utcnow() - timedelta(days=dias)
-    # Supón que tienes una columna "created_at" en User
-    borrados = db.query(User).filter(
-        User.is_active == False,
-        User.created_at < fecha_limite
-    ).delete(synchronize_session=False)
+    limite = datetime.utcnow() - timedelta(minutes=1)
+    # Encuentra los usuarios inactivos viejos
+    usuarios = db.query(User).filter(User.is_active == False, User.created_at < limite).all()
+    user_ids = [u.id for u in usuarios]
+    if not user_ids:
+        return 0
+    # Borra tokens de confirmación asociados
+    db.query(ConfirmationToken).filter(ConfirmationToken.user_id.in_(user_ids)).delete(synchronize_session=False)
+    # Borra tareas, si hace falta (si tienes ondelete=cascade, se hace solo)
+    # db.query(Tarea).filter(Tarea.user_id.in_(user_ids)).delete(synchronize_session=False)
+    # Borra los usuarios
+    db.query(User).filter(User.id.in_(user_ids)).delete(synchronize_session=False)
     db.commit()
-    return {"borrados": borrados}
+    print(f"Limpieza ejecutada. Se eliminaron {usuarios} usuarios no confirmados.")
+
+    return len(user_ids)
 
 
 @router.delete("/delete-account")

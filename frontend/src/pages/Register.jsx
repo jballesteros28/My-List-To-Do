@@ -19,7 +19,7 @@ const Register = () => {
     setError('');
     setSuccess('');
     try {
-      const response = await fetch("https://my-list-to-do.onrender.com/auth/register", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -30,8 +30,8 @@ const Register = () => {
         setError(data.detail || 'Error al registrar');
         return;
       }
-      setSuccess('Registro exitoso. ¡Ahora puedes iniciar sesión!');
-      setTimeout(() => navigate('/login'), 1500);
+      setSuccess('Registro exitoso. ¡Confirma tu cuenta antes de iniciar sesión!');
+      setTimeout(() => navigate('/login'), 2500);
     } catch (err) {
       setError('Error al conectar con el servidor');
     }
