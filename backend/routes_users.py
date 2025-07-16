@@ -22,19 +22,31 @@ router = APIRouter()
 
 @router.post("/register")
 def register(user: UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    # Buscar usuario existente por email o username
     existing_user = db.query(User).filter(
         (User.email == user.email) | (User.username == user.username)
     ).first()
+    
     if existing_user:
-        if existing_user.email == user.email:
-            raise HTTPException(status_code=409, detail="El email ya está registrado")
+        if not existing_user.is_active:
+            # Si el usuario existe pero NO está activo, lo borramos para permitir el registro de nuevo
+            db.delete(existing_user)
+            db.commit()
         else:
-            raise HTTPException(status_code=409, detail="El nombre de usuario ya está registrado")
-
+            # Si el usuario está activo, mostrar error según lo que coincide
+            if existing_user.email == user.email:
+                raise HTTPException(status_code=409, detail="El email ya está registrado")
+            else:
+                raise HTTPException(status_code=409, detail="El nombre de usuario ya está registrado")
 
     # 1. Crear el usuario con is_active=False
     hashed_password = pwd_context.hash(user.password)
-    db_user = User(username=user.username, email=user.email, hashed_password=hashed_password, is_active=False)
+    db_user = User(
+        username=user.username, 
+        email=user.email, 
+        hashed_password=hashed_password, 
+        is_active=False
+    )
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -45,8 +57,8 @@ def register(user: UserCreate, background_tasks: BackgroundTasks, db: Session = 
     db.add(db_token)
     db.commit()
 
-    # 3. Enviar mail con link de confirmación
-    confirmation_link = f"https://https://my-list-to-do.onrender.com/confirm-email?token={token}"
+    # 3. Enviar mail con link de confirmación (corrijo el link)
+    confirmation_link = f"https://my-list-to-do.onrender.com/confirm-email?token={token}"
     background_tasks.add_task(
         send_email,
         to=user.email,
@@ -55,7 +67,6 @@ def register(user: UserCreate, background_tasks: BackgroundTasks, db: Session = 
     )
     return {"msg": "Revisa tu correo para confirmar tu cuenta"}
 
-from fastapi.responses import RedirectResponse
 
 
 
@@ -219,9 +230,11 @@ def resend_confirmation(req: ResendConfirmationRequest, db: Session = Depends(ge
 @router.delete("/cleanup-unconfirmed-users")
 def cleanup_unconfirmed_users(db: Session = Depends(get_db)):
     limite = datetime.utcnow() - timedelta(minutes=1)
+    print(f"[{datetime.now()}] Ejecutando limpieza de usuarios no confirmados")
     # Encuentra los usuarios inactivos viejos
     usuarios = db.query(User).filter(User.is_active == False, User.created_at < limite).all()
     user_ids = [u.id for u in usuarios]
+    print(f"[{datetime.now()}] Usuarios no confirmados encontrados: {len(usuarios)}")
     if not user_ids:
         return 0
     # Borra tokens de confirmación asociados
@@ -230,8 +243,9 @@ def cleanup_unconfirmed_users(db: Session = Depends(get_db)):
     # db.query(Tarea).filter(Tarea.user_id.in_(user_ids)).delete(synchronize_session=False)
     # Borra los usuarios
     db.query(User).filter(User.id.in_(user_ids)).delete(synchronize_session=False)
+    for u in usuarios:
+        print(f"Borrando usuario: {u.username} ({u.email})")
     db.commit()
-    print(f"Limpieza ejecutada. Se eliminaron {usuarios} usuarios no confirmados.")
 
     return len(user_ids)
 
