@@ -8,6 +8,7 @@ const Register = () => {
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [retrying, setRetrying] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -18,6 +19,8 @@ const Register = () => {
     e.preventDefault();
     setError('');
     setSuccess('');
+    setRetrying(false);
+
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
         method: 'POST',
@@ -26,10 +29,22 @@ const Register = () => {
       });
       const data = await response.json();
 
+      // --- Lógica para errores específicos ---
       if (!response.ok) {
-        setError(data.detail || 'Error al registrar');
+        // Mensaje para usuario/email ya registrado y activo
+        if (
+          data.detail === 'El email ya está registrado' ||
+          data.detail === 'El nombre de usuario ya está registrado'
+        ) {
+          setError(data.detail);
+        } else {
+          // En el backend, cuando usuario/email estaban INACTIVOS, el registro se permite normalmente y se borra el registro anterior. Así que cualquier otro error se muestra:
+          setError(data.detail || 'Error al registrar');
+        }
         return;
       }
+
+      // --- Si fue exitoso ---
       setSuccess('Registro exitoso. ¡Confirma tu cuenta antes de iniciar sesión!');
       setTimeout(() => navigate('/login'), 2500);
     } catch (err) {

@@ -18,7 +18,7 @@ app = FastAPI()
 
 def start_scheduler():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(lambda: cleanup_unconfirmed_users(SessionLocal()), 'interval', minutes=1)
+    scheduler.add_job(lambda: cleanup_unconfirmed_users(SessionLocal()), 'interval', minutes=10)
     scheduler.start()
     
 

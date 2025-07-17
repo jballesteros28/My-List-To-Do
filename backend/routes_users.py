@@ -229,7 +229,7 @@ def resend_confirmation(req: ResendConfirmationRequest, db: Session = Depends(ge
 
 @router.delete("/cleanup-unconfirmed-users")
 def cleanup_unconfirmed_users(db: Session = Depends(get_db)):
-    limite = datetime.utcnow() - timedelta(minutes=1)
+    limite = datetime.utcnow() - timedelta(minutes=10)
     print(f"[{datetime.now()}] Ejecutando limpieza de usuarios no confirmados")
     # Encuentra los usuarios inactivos viejos
     usuarios = db.query(User).filter(User.is_active == False, User.created_at < limite).all()
