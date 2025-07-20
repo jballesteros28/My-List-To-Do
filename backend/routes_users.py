@@ -215,7 +215,7 @@ def resend_confirmation(req: ResendConfirmationRequest, db: Session = Depends(ge
     db.commit()
 
     # Prepara el link de confirmación (ajusta la URL a tu frontend real)
-    confirmation_link = f"https://my-list-to-do-eight.vercel.app/auth/confirm-email?token={token}"
+    confirmation_link = f"https://my-list-to-do.onrender.com/auth/confirm-email?token={token}"
 
     # Envía el correo de confirmación
     send_email(
