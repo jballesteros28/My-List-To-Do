@@ -71,7 +71,7 @@ def register(user: UserCreate, background_tasks: BackgroundTasks, db: Session = 
 
 
 @router.get("/confirm-email")
-def confirm_email(token: str, db: Session = Depends(get_db)):
+async def confirm_email(token: str, db: Session = Depends(get_db)):
     db_token = db.query(ConfirmationToken).filter_by(token=token).first()
     if not db_token:
         return RedirectResponse(url="https://my-list-to-do-eight.vercel.app/login?confirm=fail")
