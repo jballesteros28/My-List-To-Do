@@ -58,7 +58,7 @@ def register(user: UserCreate, background_tasks: BackgroundTasks, db: Session = 
     db.commit()
 
     # 3. Enviar mail con link de confirmación (corrijo el link)
-    confirmation_link = f"https://my-list-to-do.onrender.com/confirm-email?token={token}"
+    confirmation_link = f"https://my-list-to-do.onrender.com/auth/confirm-email?token={token}"
     background_tasks.add_task(
         send_email,
         to=user.email,
@@ -215,7 +215,7 @@ def resend_confirmation(req: ResendConfirmationRequest, db: Session = Depends(ge
     db.commit()
 
     # Prepara el link de confirmación (ajusta la URL a tu frontend real)
-    confirmation_link = f"https://my-list-to-do-eight.vercel.app/confirm-email?token={token}"
+    confirmation_link = f"https://my-list-to-do-eight.vercel.app/auth/confirm-email?token={token}"
 
     # Envía el correo de confirmación
     send_email(
