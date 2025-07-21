@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation} from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import NeuInput from '../components/NeuInput';
 import NeuButton from '../components/NeuButton';
 import '../styles/Auth.css';
@@ -7,9 +7,9 @@ import '../styles/Auth.css';
 const Login = () => {
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
+  const [confirmMsg, setConfirmMsg] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const [confirmMsg, setConfirmMsg] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -19,6 +19,9 @@ const Login = () => {
     const params = new URLSearchParams(location.search);
     if (params.get("confirm") === "success") {
       setConfirmMsg("¡Cuenta confirmada exitosamente! Ahora puedes iniciar sesión.");
+      window.history.replaceState({}, document.title, location.pathname);
+    } else if (params.get("confirm") === "fail") {
+      setConfirmMsg("Error al confirmar la cuenta. El enlace es inválido o ya fue utilizado.");
       window.history.replaceState({}, document.title, location.pathname);
     }
   }, [location]);
@@ -69,7 +72,9 @@ const Login = () => {
     <div className="login-container">
       <h2>Iniciar Sesión</h2>
       {confirmMsg && (
-        <div className="neu-confirm-message">{confirmMsg}</div>
+        <div className={`neu-confirm-message ${confirmMsg.includes("Error") ? "fail" : "success"}`}>
+          {confirmMsg}
+        </div>
       )}
       <form onSubmit={handleSubmit}>
         <NeuInput
@@ -100,5 +105,6 @@ const Login = () => {
 };
 
 export default Login;
+
 
 
