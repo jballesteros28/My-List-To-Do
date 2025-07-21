@@ -40,7 +40,7 @@ function Tareas() {
     e.preventDefault();
     if (!titulo.trim()) return;
     try {
-      const res = await fetch(API_URL, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/tareas/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -59,7 +59,7 @@ function Tareas() {
   // Eliminar tarea
   const eliminarTarea = async (id) => {
     try {
-      const res = await fetch(`${API_URL}${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/tareas/${id}`, {
         method: "DELETE",
         headers: { Authorization: "Bearer " + getToken() },
       });
@@ -83,7 +83,7 @@ function Tareas() {
 
   const guardarEdicion = async (id) => {
     try {
-      const res = await fetch(`${API_URL}${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/tareas/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
